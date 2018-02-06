@@ -8,15 +8,22 @@ task :html => SOURCE_FILES.pathmap("%{^sources/,outputs/}X.html")
 
 directory "outputs"
 
+task :show => ['index', 'html'] do
+  sh 'open outputs/index.html'
+end
+
 task :generate do
   require 'date'
   mkdir_p "sources"
+  file_name = "sources/#{DateTime.now.iso8601}_entry.md"
 
-  File.open("sources/#{DateTime.now.iso8601}_entry.md", "w") do |f|
+  File.open(file_name,"w") do |f|
     f.puts "### What have you done today?"
     f.puts "### How can you improve?"
     f.puts "### What have you learn today?"
   end
+
+  sh "vim #{file_name}"
 end
 
 task :index do
@@ -38,6 +45,10 @@ rule '.html' => [->(f){source_for_html(f)}, 'outputs'] do |t|
   mkdir_p t.name.pathmap("%d")
   sh "pandoc -o #{t.name} #{t.source} --css '../pandoc.css'"
 end
+
+# ==============
+# Helper methods
+# ==============
 
 def source_for_html(html_file)
   SOURCE_FILES.detect {|f|
