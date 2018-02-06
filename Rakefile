@@ -8,10 +8,12 @@ task :html => SOURCE_FILES.pathmap("%{^sources/,outputs/}X.html")
 
 directory "outputs"
 
+desc "Open outputs/index.html in browser"
 task :show => ['index', 'html'] do
   sh 'open outputs/index.html'
 end
 
+desc "Generate template and open the file with vim "
 task :generate do
   require 'date'
   mkdir_p "sources"
@@ -26,6 +28,7 @@ task :generate do
   sh "vim #{file_name}"
 end
 
+desc "Generate index.html based on sources files"
 task :index do
   index = "# Entries\n" + index_md
   file = Tempfile.new(['index', '.md'])
