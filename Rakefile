@@ -14,15 +14,23 @@ task :show => ['index', 'html'] do
 end
 
 desc "Generate template and open the file with vim "
-task :generate do
+task :generate, [:template_name] do |t, args|
   require 'date'
   mkdir_p "sources"
-  file_name = "sources/#{DateTime.now.iso8601}_entry.md"
+  date = DateTime.now
+  file_name = "sources/#{date.iso8601}_entry.md"
 
+  # Read in template content
+  template_name = args[:template_name]
+  template = ""
+  if template_name
+    template = File.read("templates/#{template_name}.md")
+  end
+
+  # Write to generated file
   File.open(file_name,"w") do |f|
-    f.puts "### What have you done today?"
-    f.puts "### How can you improve?"
-    f.puts "### What have you learn today?"
+    f.puts "# #{date.strftime("%F")}"
+    f.puts template
   end
 
   sh "vim #{file_name}"
