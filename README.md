@@ -16,14 +16,9 @@ gem install rake
 
 3. Install `pandoc`. Refer to the [official installation guide](https://pandoc.org/installing.html)
 
-4. Create a directory where you want to use it and change directory.
+4. Clone this repository to your desired directory _(where you want to use this)_
 ```
-mkdir <directory_name> && cd <directory_name>
-```
-
-5. Clone this repository
-```
-git clone https://github.com/kw7oe/bob_the_builder.git
+git clone https://github.com/kw7oe/bob_the_builder.git <directory_name>
 ```
 
 ### Usage
@@ -69,7 +64,8 @@ _name>/`
 ### Limitation
 
 - Currently, it is written only fo `macOS`. Command such as `open` and
-file seperator `/` is assumed to be available.
+file seperator `/` is assumed to be available. For linux user,
+who have `xdg-open`, you can directly modify `line 14` of the `Rakefile`, changing `open` to `xdg-open` after the `sh` method.
 - The generated `index.html` is still very limited. It doesn't
 splits the file entries according to templates yet.
 - It's not a command line tool...
