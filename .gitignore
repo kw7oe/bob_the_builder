@@ -1,3 +1,4 @@
-# Ignore all directories
+# Ignore the following directories
 outputs/
 sources/
+templates/
