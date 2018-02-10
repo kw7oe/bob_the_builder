@@ -3,6 +3,7 @@ require 'tempfile'
 
 SOURCE_FILES = Rake::FileList.new("sources/**/*.md",
                                   "sources/**/*.markdown")
+DIR = File.dirname(__FILE__)
 
 task :html => SOURCE_FILES.pathmap("%{^sources/,outputs/}X.html")
 
@@ -37,14 +38,15 @@ task :generate, [:template_name] do |t, args|
 end
 
 desc "Generate index.html based on sources files"
-task :index do
+task :index => ['outputs']  do
   index = "# Entries\n" + index_md
   file = Tempfile.new(['index', '.md'])
   begin
     file.write index
+    file.rewind
+    sh "pandoc -o 'outputs/index.html' #{file.path} --css '#{DIR}/pandoc.css'"
   ensure
     file.close
-    sh "pandoc -o 'outputs/index.html' #{file.path} --css '../pandoc.css'"
   end
 end
 
@@ -54,7 +56,7 @@ end
 
 rule '.html' => [->(f){source_for_html(f)}, 'outputs'] do |t|
   mkdir_p t.name.pathmap("%d")
-  sh "pandoc -o #{t.name} #{t.source} --css '../pandoc.css'"
+  sh "pandoc -o #{t.name} #{t.source} --css '#{DIR}/pandoc.css'"
 end
 
 # ==============
@@ -69,8 +71,10 @@ end
 
 def index_md
   SOURCE_FILES.pathmap("%{^sources/,outputs/}X.html").map do |s|
-    s = s.split("/")[1]
-    "- [#{get_date(s)}](#{s})"
+    split_s = s.split("/")
+    file_name = split_s.last
+    s = split_s.tap(&:shift).join("/")
+    "- [#{get_date(file_name)}](#{s})"
   end.join("\n")
 end
 
