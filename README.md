@@ -23,7 +23,7 @@ mkdir <directory_name> && cd <directory_name>
 
 5. Clone this repository
 ```
-git clone https://github.com/kw7oe/rnote.git
+git clone https://github.com/kw7oe/bob_the_builder.git
 ```
 
 ### Usage
