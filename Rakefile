@@ -25,7 +25,9 @@ task :generate, [:template_name] do |t, args|
   template_name = args[:template_name]
   template = ""
   if template_name
+    mkdir_p "sources/#{template_name}"
     template = File.read("templates/#{template_name}.md")
+    file_name = "sources/#{template_name}/#{date.iso8601}_entry.md"
   end
 
   # Write to generated file
