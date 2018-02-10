@@ -1,30 +1,44 @@
-# rnote
+# Bob the Builder
 
 This is a simple Rakefile to help with generating `Markdown` files
 according to templates given and compile into HTML with a simple
-index.
+index HTML file.
 
 ### Installation
 
 1. Install `ruby`. Refer to the
 [official installation guide](https://www.ruby-lang.org/en/documentation/installation/)
+
 2. Install `rake`
 ```
 gem install rake
 ```
 
+3. Install `pandoc`. Refer to the [official installation guide](https://pandoc.org/installing.html)
+
+4. Create a directory where you want to use it and change directory.
+```
+mkdir <directory_name> && cd <directory_name>
+```
+
+5. Clone this repository
+```
+git clone https://github.com/kw7oe/rnote.git
+```
+
 ### Usage
 
-1. Create a Markdown file as template first and place it under `/templates`
+#### 1. Create a Markdown file as template first and place it under `/templates`
 
-For instance, I have a simple Markdown files `/templates/journal_entry
-.md` as follow:
+For instance, I have a simple Markdown files `/templates/journal_entry.md` as follow:
 
 ```
 ### What did you learn today?
 ```
 
-2. To generate a Markdown files according to the template:
+You can have more than one templates.
+
+#### 2. To generate a Markdown files according to the template:
 ```
 rake generate[<template_name>]
 ```
@@ -34,22 +48,32 @@ Using the above example, it will be `rake generate['journal_entry']`
 **Note:** Currently, `rake generate` will create a file and open
 it with `vim`
 
-3. To view your files in html, use `rake show`.
-4. `rake -T` to view more available commands.
+#### 3. To view your files in html:
+```
+rake show
+```
+
+### How do you generate the HTML files?
+
+`pandoc` is used to generate the HTML files from the Markdown files. Basic styling is added to the HTML files. The CSS file used is taken from https://gist.github.com/killercup/5917178 with slight modification.
+
 
 ### Where is the files located?
 
-All of the generated Markdown files are located under `/sources/<
-template_name>/`
+All of the generated Markdown files are located under `/sources/<template_name>/`
 
 All of the output HTML files are located under `/outputs/<template
-_nane>/`
+_name>/`
 
 
 ### Limitation
 
-Currently, it is written only fo `macOS`. Command such as `open` and
-file seperator '/' is assumed to be available.
+- Currently, it is written only fo `macOS`. Command such as `open` and
+file seperator `/` is assumed to be available.
+- The generated `index.html` is still very limited. It doesn't
+splits the file entries according to templates yet.
+- It's not a command line tool...
+
 
 ### Bugs/Features
 
