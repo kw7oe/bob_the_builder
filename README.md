@@ -1,5 +1,7 @@
 # Bob the Builder
 
+<img src="https://user-images.githubusercontent.com/12708862/36083580-e4f7c106-0fee-11e8-95c5-7d6dcf3fe095.jpg">
+
 This is a simple Rakefile to help with generating `Markdown` files
 according to templates given and compile into HTML with a simple
 index HTML file.
