@@ -4,7 +4,7 @@ require_relative '../../lib/bob_builder/index_generator'
 describe BobBuilder::IndexGenerator do
 
   let(:generator) do
-    BobBuilder::IndexGenerator.new("test/fixtures/sources/")
+    BobBuilder::IndexGenerator.new("test/fixtures/test_sources/")
   end
 
   it 'should render index correctly' do
