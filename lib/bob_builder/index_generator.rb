@@ -1,9 +1,23 @@
+require 'tempfile'
+
 module BobBuilder
   class IndexGenerator
     def initialize(source_dir)
       @source_dir = source_dir
       @dir_lists = []
       @file_lists = []
+    end
+
+    def save
+      file = Tempfile.new(['index', '.md'])
+
+      begin
+        file.write render(file_lists)
+        file.rewind
+        system "pandoc -o 'outputs/index.html' '#{file.path}' --css '../pandoc.css'"
+      ensure
+        file.close
+      end
     end
 
     # Render the index from an array of files
@@ -21,7 +35,7 @@ module BobBuilder
 
         if (previous_parent_dir != parent_dir)
           previous_parent_dir = parent_dir
-          heading = "### #{parent_dir}\n"
+          heading = "\n### #{parent_dir}\n"
         end
 
         "#{heading}- [#{name}](#{f.sub('.md', '.html')})"

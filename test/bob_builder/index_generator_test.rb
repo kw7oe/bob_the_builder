@@ -12,7 +12,8 @@ describe BobBuilder::IndexGenerator do
       "notes/another-title.md",
       "notes/this.md"
     ])
-    expected_result = <<~EOF.strip
+    expected_result = <<~EOF.rstrip
+
     ### Notes
     - [another title](notes/another-title.html)
     - [this](notes/this.html)
@@ -23,10 +24,12 @@ describe BobBuilder::IndexGenerator do
 
   it 'should render index correctly with nested folder' do
     result = generator.render(generator.file_lists)
-    expected_result = <<~EOF.strip
+    expected_result = <<~EOF.rstrip
+
     ### Notes
     - [another title](notes/another-title.html)
     - [this is title](notes/this-is-title.html)
+
     ### Topic one
     - [ch 2](notes/topic-one/ch-2.html)
     - [ch 1](notes/topic-one/ch-1.html)
