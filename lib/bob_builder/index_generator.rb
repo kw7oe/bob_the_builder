@@ -27,11 +27,8 @@ module BobBuilder
       file_lists.map do |f|
         heading = nil
         name = File.basename(f, '.md').gsub("-", " ")
-        parent_dir = File.dirname(f)
-          .split("/")
-          .last
-          .gsub("-", " ")
-          .capitalize
+        dirname = File.dirname(f)
+        parent_dir = get_parent_dir_name(dirname)
 
         if (previous_parent_dir != parent_dir)
           previous_parent_dir = parent_dir
@@ -40,6 +37,26 @@ module BobBuilder
 
         "#{heading}- [#{name}](#{f.sub('.md', '.html')})"
       end.join("\n")
+    end
+
+    def render_dir(file_lists)
+      root_dir = get_root_dir(File.dirname(file_lists.first))
+      root_dir_name = capitalize_dirname(root_dir)
+      prev_dir = nil
+
+      content = file_lists.map do |f|
+        dirname = File.dirname(f)
+        parent_dir, index = get_parent_dir(dirname)
+        parent_dir_name = get_parent_dir_name(dirname)
+
+        if (index == 2 && prev_dir != parent_dir)
+          prev_dir = parent_dir
+          "- [#{parent_dir_name}](#{root_dir}/#{parent_dir})"
+        else
+          nil
+        end
+      end.compact.join("\n")
+      "\n### #{root_dir_name}\n#{content}"
     end
 
     def file_lists
@@ -51,6 +68,27 @@ module BobBuilder
 
       @file_lists
     end
+
+    # Helper methods
+    # TODO: Refactor out of this class
+    def capitalize_dirname(dir)
+      dir.gsub("-", " ").capitalize
+    end
+
+    def get_root_dir(dir)
+      dir.split("/").first
+    end
+
+    def get_parent_dir(dirname)
+      directories = dirname.split(File::SEPARATOR)
+      [directories.last, directories.size]
+    end
+
+    def get_parent_dir_name(dirname)
+      parent_dir, size = get_parent_dir(dirname)
+      capitalize_dirname(parent_dir)
+    end
+
 
   end
 end
