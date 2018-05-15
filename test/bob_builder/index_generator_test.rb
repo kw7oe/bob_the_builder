@@ -43,6 +43,8 @@ describe BobBuilder::IndexGenerator do
     expected_result = <<~EOF.rstrip
 
     ### Notes
+    - [another title](notes/another-title.html)
+    - [this is title](notes/this-is-title.html)
     - [Topic one](notes/topic-one)
     EOF
 

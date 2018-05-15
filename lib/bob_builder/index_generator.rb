@@ -48,10 +48,16 @@ module BobBuilder
         dirname = File.dirname(f)
         parent_dir, index = get_parent_dir(dirname)
         parent_dir_name = get_parent_dir_name(dirname)
+        p "Root dir: " + root_dir
+        p "Dirname: " + dirname
+        p "Parent dir: " + parent_dir
 
         if (index == 2 && prev_dir != parent_dir)
           prev_dir = parent_dir
           "- [#{parent_dir_name}](#{root_dir}/#{parent_dir})"
+        elsif parent_dir == root_dir
+          name = File.basename(f, '.md').gsub("-", " ")
+          "-[#{name}](#{f.sub('.md', '.html')})"
         else
           nil
         end
