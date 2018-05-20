@@ -11,7 +11,6 @@ module BobBuilder
 
     def create_index_file
       css_source = File.join(File.dirname(__FILE__), '../../pandoc.css')
-      p dir_lists
 
       dir_lists.each do |dir|
         file = Tempfile.new(['index', '.md'])
@@ -21,7 +20,7 @@ module BobBuilder
           des_dir = File.join(@destination_dir, dir)
           FileUtils.mkdir_p(des_dir)
 
-          content = render_dir(file_lists(source_dir))
+          content = render_dir(file_lists(source_dir), dir)
           next unless content
 
           file.write(content)
@@ -56,10 +55,12 @@ module BobBuilder
     end
 
     # Render the index (Directory and files) from an array of files
-    def render_dir(files)
+    def render_dir(files, dir)
       return if files.empty?
 
-      root_dir = get_root_dir(File.dirname(files.first))
+      p dir
+
+      root_dir = get_root_dir(dir)
       root_dir_name = capitalize_dirname(root_dir)
       prev_dir = nil
 
@@ -110,7 +111,7 @@ module BobBuilder
     end
 
     def get_root_dir(dir)
-      dir.split("/").first
+      dir.split("/").last
     end
 
     def get_parent_dir(dirname)
