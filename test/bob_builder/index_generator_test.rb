@@ -41,13 +41,14 @@ describe BobBuilder::IndexGenerator do
   end
 
   it 'should render dir index correctly with nested folder' do
-    result = generator.render_dir(generator.file_lists(dir))
+    files = generator.file_lists(File.join(dir, 'notes'))
+    result = generator.render_dir(files, 'notes')
     expected_result = <<~EOF.rstrip
 
     ### Notes
-    - [another title](notes/another-title.html)
-    - [this is title](notes/this-is-title.html)
-    - [Topic one](notes/topic-one)
+    - [another title](another-title.html)
+    - [this is title](this-is-title.html)
+    - [Topic one](topic-one/index.html)
     EOF
 
     assert_equal expected_result, result
@@ -69,8 +70,8 @@ describe BobBuilder::IndexGenerator do
   end
 
   it 'should get the root directory' do
-    result = generator.get_root_dir('notes/apple/cat.md')
-    expected_result = 'notes'
+    result = generator.get_root_dir('notes/apple')
+    expected_result = 'apple'
 
     assert_equal expected_result, result
   end

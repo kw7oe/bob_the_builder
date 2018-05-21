@@ -58,8 +58,6 @@ module BobBuilder
     def render_dir(files, dir)
       return if files.empty?
 
-      p dir
-
       root_dir = get_root_dir(dir)
       root_dir_name = capitalize_dirname(root_dir)
       prev_dir = nil
