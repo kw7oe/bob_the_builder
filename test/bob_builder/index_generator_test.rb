@@ -54,6 +54,18 @@ describe BobBuilder::IndexGenerator do
     assert_equal expected_result, result
   end
 
+  it 'should return main index' do
+    result = generator.render_main()
+    expected_result = <<~EOF.rstrip
+
+    ### Index
+    - [Notes](notes/index.html)
+    EOF
+
+    assert_equal expected_result, result
+  end
+
+
   it 'should return file lists correctly' do
     result = generator.file_lists(dir)
     expected_result = ['notes/another-title.md', 'notes/this-is-title.md', 'notes/topic-one/ch-1.md', 'notes/topic-one/ch-2.md']
@@ -83,6 +95,13 @@ describe BobBuilder::IndexGenerator do
 
     assert_equal expected_result, result
     assert_equal 2, size
+  end
+
+  it 'should get root directories only (exclude nested)' do
+    result = generator.index_dir
+    expected_result = ['notes']
+
+    assert_equal expected_result, result
   end
 
 end

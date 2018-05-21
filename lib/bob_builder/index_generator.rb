@@ -13,25 +13,27 @@ module BobBuilder
       css_source = File.join(File.dirname(__FILE__), '../../pandoc.css')
 
       dir_lists.each do |dir|
-        file = Tempfile.new(['index', '.md'])
+        source_dir = File.join(@source_dir, dir)
+        des_dir = File.join(@destination_dir, dir)
+        FileUtils.mkdir_p(des_dir)
+        content = render_dir(file_lists(source_dir), dir)
+        next unless content
 
-        begin
-          source_dir = File.join(@source_dir, dir)
-          des_dir = File.join(@destination_dir, dir)
-          FileUtils.mkdir_p(des_dir)
+        generate_html(content, "#{des_dir}/index.html", css_source)
+      end
+    end
 
-          content = render_dir(file_lists(source_dir), dir)
-          next unless content
+    def generate_html(content, destination, css_source)
+      file = Tempfile.new(['index', '.md'])
 
-          file.write(content)
-          file.rewind
-
-          command = "pandoc -o '#{des_dir}/index.html' '#{file.path}' --css '#{css_source}'"
-          puts(command)
-          system(command)
-        ensure
-          file.close
-        end
+      begin
+        file.write(content)
+        file.rewind
+        command = "pandoc -o '#{destination}' '#{file.path}' --css '#{css_source}'"
+        puts(command)
+        system(command)
+      ensure
+        file.close
       end
     end
 
@@ -54,12 +56,20 @@ module BobBuilder
       end.join("\n")
     end
 
+    def render_main
+      render_dir(index_dir, @source_dir, main: true)
+    end
+
     # Render the index (Directory and files) from an array of files
-    def render_dir(files, dir)
+    def render_dir(files, dir, main: false)
       return if files.empty?
 
       root_dir = get_root_dir(dir)
-      root_dir_name = capitalize_dirname(root_dir)
+      root_dir_name = if main
+                        "Index"
+                      else
+                        capitalize_dirname(root_dir)
+                      end
       prev_dir = nil
 
       content = files.map do |f|
@@ -68,12 +78,16 @@ module BobBuilder
         parent_dir, index = get_parent_dir(dirname)
         parent_dir_name = get_parent_dir_name(dirname)
 
-        if parent_dir == "."
+        if parent_dir == "." && !main
           name = File.basename(f, '.md').gsub("-", " ")
           "- [#{name}](#{f.sub('.md', '.html')})"
         elsif prev_dir != parent_dir
-          prev_dir = parent_dir
-          "- [#{parent_dir_name}](#{parent_dir}/index.html)"
+          if main
+            "- [#{capitalize_dirname(f)}](#{f}/index.html)"
+          else
+            prev_dir = parent_dir
+            "- [#{parent_dir_name}](#{parent_dir}/index.html)"
+          end
         else
           nil
         end
@@ -100,6 +114,10 @@ module BobBuilder
       end
 
       @dir_lists
+    end
+
+    def index_dir
+      dir_lists.select { |x| x.split(File::SEPARATOR).length == 1 }
     end
 
     # Helper methods
