@@ -7,25 +7,27 @@ module BobBuilder
       @source_dir = source_dir
       @destination_dir = destination_dir
       @dir_lists = []
+      @css_source = File.join(File.dirname(__FILE__), '../../pandoc.css')
+    end
+
+    def call
+      create_index_file
+      generate_html(render_main, "#{@destination_dir}/index.html", @css_source)
     end
 
     def create_index_file
-      css_source = File.join(File.dirname(__FILE__), '../../pandoc.css')
-
       dir_lists.each do |dir|
         source_dir = File.join(@source_dir, dir)
         des_dir = File.join(@destination_dir, dir)
         FileUtils.mkdir_p(des_dir)
         content = render_dir(file_lists(source_dir), dir)
         next unless content
-
-        generate_html(content, "#{des_dir}/index.html", css_source)
+        generate_html(content, "#{des_dir}/index.html", @css_source)
       end
     end
 
     def generate_html(content, destination, css_source)
       file = Tempfile.new(['index', '.md'])
-
       begin
         file.write(content)
         file.rewind
