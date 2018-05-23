@@ -125,7 +125,7 @@ module BobBuilder
     # Helper methods
     # TODO: Refactor out of this class
     def capitalize_dirname(dir)
-      dir.gsub("-", " ").capitalize
+      dir.gsub(/[_-]/, " ").capitalize
     end
 
     def get_root_dir(dir)
