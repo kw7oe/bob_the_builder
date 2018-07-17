@@ -22,8 +22,7 @@ a {
   text-decoration: none;
 }
 
-a:visited {
-  color: #0b0080;
+a:visited { color: #0b0080;
 }
 
 a:hover {
@@ -119,18 +118,18 @@ hr {
 }
 
 pre, code, kbd, samp {
-  color: #ff2222;
+  /* color: #ff2222; */
   background-color: #f2f2f2;
   font-family: monospace, monospace;
   _font-family: 'courier new', monospace;
   font-size: 0.98em;
-  padding: 0px 3px;
 }
 
 pre {
   white-space: pre;
   white-space: pre-wrap;
   word-wrap: break-word;
+  padding: 0px 3px;
 }
 
 b, strong {

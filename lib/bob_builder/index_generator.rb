@@ -39,27 +39,24 @@ module BobBuilder
       end
     end
 
-    # Render the index (Nested files) from an array of files
-    def render(files)
-      previous_parent_dir = nil
-
-      files.map do |f|
-        heading = nil
-        name = File.basename(f, '.md').gsub("-", " ")
-        dirname = File.dirname(f)
-        parent_dir = get_parent_dir_name(dirname)
-
-        if (previous_parent_dir != parent_dir)
-          previous_parent_dir = parent_dir
-          heading = "\n### #{parent_dir}\n"
-        end
-
-        "#{heading}- [#{name}](#{f.sub('.md', '.html')})"
-      end.join("\n")
+    def render_main
+      render_dir(index_dir, @source_dir, main: true) + "\n" +
+      render_files(current_dir_files(@source_dir))
     end
 
-    def render_main
-      render_dir(index_dir, @source_dir, main: true)
+    def current_dir_files(dir)
+      files = []
+      Dir.chdir(dir) do
+        files = Dir.glob('*.md')
+      end
+      files
+    end
+
+    def render_files(files)
+      files.map do |file|
+        name = File.basename(file, '.md').gsub("-", " ")
+        "- [#{name}](#{file.sub('.md', '.html')})"
+      end.join("\n")
     end
 
     # Render the index (Directory and files) from an array of files
