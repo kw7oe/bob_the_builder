@@ -49,6 +49,10 @@ it with `vim`
 ```
 rake show
 ```
+This show the `index.html` of the compiled files and directories in your browser.
+
+- Viewing the directory will show the index files for the directory.
+- Viewing the file will show the generated HTML content from Markdown file.
 
 ### How do you generate the HTML files?
 
@@ -68,13 +72,9 @@ _name>/`
 - Currently, it is written only fo `macOS`. Command such as `open` and
 file seperator `/` is assumed to be available. For linux user,
 who have `xdg-open`, you can directly modify `line 14` of the `Rakefile`, changing `open` to `xdg-open` after the `sh` method.
-- The generated `index.html` is still very limited. It doesn't
-splits the file entries according to templates yet.
 - It's not a command line tool...
 
 
 ### Bugs/Features
 
-The project is still under development.
-
-If there are any bugs/features request, feel free to create a new issues.
+The project is still under development. If there are any bugs/features request, feel free to create a new issues.
