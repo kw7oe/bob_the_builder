@@ -9,27 +9,24 @@ describe BobBuilder::IndexGenerator do
     BobBuilder::IndexGenerator.new(dir, des)
   end
 
-  it 'should render dir index correctly with nested folder' do
-    files = generator.file_lists(File.join(dir, 'notes'))
-    result = generator.render_dir(files, 'notes')
+  it 'should return main index' do
+    result = generator.content_for_index_file(dir)
     expected_result = <<~EOF.rstrip
-
-    ### Notes
-    - [Another title](another-title.html)
-    - [This is title](this-is-title.html)
-    - [Topic one](topic-one/index.html)
+    ### Test sources
+    - [Notes](notes/index.html)
+    - [Test](test.html)
     EOF
 
     assert_equal expected_result, result
   end
 
-  it 'should return main index' do
-    result = generator.render_main()
+  it 'should render the index file correctly' do
+    result = generator.content_for_index_file(dir + 'notes')
     expected_result = <<~EOF.rstrip
-
-    ### Index
-    - [Notes](notes/index.html)
-    - [Test](test.html)
+    ### Notes
+    - [Topic one](topic-one/index.html)
+    - [Another title](another-title.html)
+    - [This is title](this-is-title.html)
     EOF
 
     assert_equal expected_result, result
@@ -58,6 +55,13 @@ describe BobBuilder::IndexGenerator do
     assert_equal expected_result, result
   end
 
+  it 'should return current directory directory lists correctly' do
+    result = generator.current_dir_directories(dir)
+    expected_result = ['notes']
+
+    assert_equal expected_result, result
+  end
+
   it 'should get the root directory' do
     result = generator.get_root_dir('notes/apple')
     expected_result = 'apple'
@@ -73,12 +77,4 @@ describe BobBuilder::IndexGenerator do
     assert_equal expected_result, result
     assert_equal 2, size
   end
-
-  it 'should get root directories only (exclude nested)' do
-    result = generator.index_dir
-    expected_result = ['notes']
-
-    assert_equal expected_result, result
-  end
-
 end

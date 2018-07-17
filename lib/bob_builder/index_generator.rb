@@ -12,7 +12,8 @@ module BobBuilder
 
     def call
       create_index_file
-      generate_html(render_main, "#{@destination_dir}/index.html", @css_source)
+      content = content_for_index_file(@source_dir)
+      generate_html(content, "#{@destination_dir}/index.html", @css_source)
     end
 
     def create_index_file
@@ -20,7 +21,7 @@ module BobBuilder
         source_dir = File.join(@source_dir, dir)
         des_dir = File.join(@destination_dir, dir)
         FileUtils.mkdir_p(des_dir)
-        content = render_dir(file_lists(source_dir), dir)
+        content = content_for_index_file(source_dir)
         next unless content
         generate_html(content, "#{des_dir}/index.html", @css_source)
       end
@@ -39,9 +40,24 @@ module BobBuilder
       end
     end
 
-    def render_main
-      render_dir(index_dir, @source_dir, main: true) + "\n" +
-      render_files(current_dir_files(@source_dir))
+    def content_for_index_file(dir)
+      root = get_root_dir(dir)
+      "### #{capitalize_dirname(root)}\n" +
+      render_directories(current_dir_directories(dir)) + "\n" +
+        render_files(current_dir_files(dir))
+    end
+
+    def render_directories(dirs)
+      return "" if dirs.empty?
+      dirs.map do |dir|
+        generate_directory_entry(capitalize_dirname(dir), dir)
+      end.join("\n")
+    end
+
+    def render_files(files)
+      files.map do |file|
+        generate_file_entry(file)
+      end.join("\n")
     end
 
     def current_dir_files(dir)
@@ -52,48 +68,12 @@ module BobBuilder
       files
     end
 
-    def render_files(files)
-      files.map do |file|
-        generate_file_entry(file)
-      end.join("\n")
-    end
-
-    # Render the index (Directory and files) from an array of files
-    def render_dir(files, dir, main: false)
-      return if files.empty?
-
-      root_dir = get_root_dir(dir)
-      root_dir_name = if main
-                        "Index"
-                      else
-                        capitalize_dirname(root_dir)
-                      end
-      prev_dir = nil
-
-      content = files.map do |f|
-        dirname = File.dirname(f)
-
-        parent_dir, index = get_parent_dir(dirname)
-        parent_dir_name = get_parent_dir_name(dirname)
-
-        if parent_dir == "." && !main
-          generate_file_entry(f)
-        elsif prev_dir != parent_dir
-          if main
-            title = capitalize_dirname(f)
-            directory = f
-          else
-            prev_dir = parent_dir
-            title = parent_dir_name
-            directory = parent_dir
-          end
-
-          generate_directory_entry(title, directory)
-        else
-          nil
-        end
-      end.compact.join("\n")
-      "\n### #{root_dir_name}\n#{content}"
+    def current_dir_directories(dir)
+      dirs = Dir.children(dir)
+      Dir.chdir(dir) do
+        dirs.select! { |x| File.directory?(x) }
+      end
+      dirs
     end
 
     def file_lists(dir)
@@ -116,12 +96,7 @@ module BobBuilder
       @dir_lists
     end
 
-    def index_dir
-      dir_lists.select { |x| x.split(File::SEPARATOR).length == 1 }
-    end
-
     # Helper methods
-    # TODO: Refactor out of this class
     def generate_file_entry(file)
       name = File.basename(file, '.md').gsub("-", " ").capitalize
       "- [#{name}](#{file.sub('.md', '.html')})"
