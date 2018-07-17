@@ -61,9 +61,8 @@ This show the `index.html` of the compiled files and directories in your browser
 
 ### Where is the files located?
 
-All of the generated Markdown files are located under `/sources/<template_name>/`
-
-All of the output HTML files are located under `/outputs/<template
+- All of the generated Markdown files are located under `/sources/<template_name>/`
+- All of the output HTML files are located under `/outputs/<template
 _name>/`
 
 
