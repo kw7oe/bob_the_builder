@@ -15,8 +15,8 @@ describe BobBuilder::IndexGenerator do
     expected_result = <<~EOF.rstrip
 
     ### Notes
-    - [another title](another-title.html)
-    - [this is title](this-is-title.html)
+    - [Another title](another-title.html)
+    - [This is title](this-is-title.html)
     - [Topic one](topic-one/index.html)
     EOF
 
@@ -29,7 +29,7 @@ describe BobBuilder::IndexGenerator do
 
     ### Index
     - [Notes](notes/index.html)
-    - [test](test.html)
+    - [Test](test.html)
     EOF
 
     assert_equal expected_result, result

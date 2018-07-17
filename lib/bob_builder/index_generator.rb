@@ -54,8 +54,7 @@ module BobBuilder
 
     def render_files(files)
       files.map do |file|
-        name = File.basename(file, '.md').gsub("-", " ")
-        "- [#{name}](#{file.sub('.md', '.html')})"
+        generate_file_entry(file)
       end.join("\n")
     end
 
@@ -78,15 +77,18 @@ module BobBuilder
         parent_dir_name = get_parent_dir_name(dirname)
 
         if parent_dir == "." && !main
-          name = File.basename(f, '.md').gsub("-", " ")
-          "- [#{name}](#{f.sub('.md', '.html')})"
+          generate_file_entry(f)
         elsif prev_dir != parent_dir
           if main
-            "- [#{capitalize_dirname(f)}](#{f}/index.html)"
+            title = capitalize_dirname(f)
+            directory = f
           else
             prev_dir = parent_dir
-            "- [#{parent_dir_name}](#{parent_dir}/index.html)"
+            title = parent_dir_name
+            directory = parent_dir
           end
+
+          generate_directory_entry(title, directory)
         else
           nil
         end
@@ -97,9 +99,8 @@ module BobBuilder
     def file_lists(dir)
       files = []
       Dir.chdir(dir) do
-        Dir.glob("**/*.md") { |x| files <<  x }
+        files = Dir.glob("**/*.md")
       end
-
       files
     end
 
@@ -121,6 +122,15 @@ module BobBuilder
 
     # Helper methods
     # TODO: Refactor out of this class
+    def generate_file_entry(file)
+      name = File.basename(file, '.md').gsub("-", " ").capitalize
+      "- [#{name}](#{file.sub('.md', '.html')})"
+    end
+
+    def generate_directory_entry(title, directory)
+      "- [#{title}](#{directory}/index.html)"
+    end
+
     def capitalize_dirname(dir)
       dir.gsub(/[_-]/, " ").capitalize
     end
@@ -138,7 +148,5 @@ module BobBuilder
       parent_dir, size = get_parent_dir(dirname)
       capitalize_dirname(parent_dir)
     end
-
-
   end
 end
